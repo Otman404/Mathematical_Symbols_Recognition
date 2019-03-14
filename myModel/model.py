@@ -33,30 +33,17 @@ class VGGNet:
 			inputShape = (depth, height, width)
 			chanDim = 1
         # CONV => RELU => POOL
-		model.add(Conv2D(32, (3, 3),
-			input_shape=inputShape))  #32 nbr of layers
-		model.add(Activation("relu"))
+		model.add(Conv2D(32, kernel_size=(3, 3),
+                 activation='relu',
+                 input_shape=inputShape))
+		model.add(Conv2D(64, (3, 3), activation='relu'))
 		model.add(MaxPooling2D(pool_size=(2, 2)))
-        # (CONV => RELU) * 2 => POOL
-		model.add(Conv2D(32, (3, 3)))
-		model.add(Activation("relu"))
-		model.add(MaxPooling2D(pool_size=(2, 2)))
- 
-		# (CONV => RELU) * 2 => POOL
-		model.add(Conv2D(64, (3, 3)))
-		model.add(Activation("relu"))
-		model.add(MaxPooling2D(pool_size=(2, 2)))
-        # first (and only) set of FC => RELU layers
-		model.add(Flatten()) # this converts our 3D feature maps to 1D feature vectors
-		model.add(Dense(64))
-		model.add(Activation("relu"))
+		model.add(Dropout(0.25))
+		model.add(Flatten())
+		model.add(Dense(128, activation='relu'))
 		model.add(Dropout(0.5))
-		
- 
-		# use a *softmax* activation for single-label classification
-		# and *sigmoid* activation for multi-label classification
-		model.add(Dense(classes))
-		model.add(Activation(activFct))
+		model.add(Dense(classes, activation='softmax'))
+
  
 		# return the constructed network architecture
 		return model
