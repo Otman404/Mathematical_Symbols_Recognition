@@ -20,15 +20,14 @@ import pickle
 import cv2
 import os
 
-
 #%%
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-d", "--dataset", required=True, # --dataset : The path to our dataset.
+ap.add_argument("-d", "--dataset", # --dataset : The path to our dataset. add required=True if you want
 	help="path to input dataset (i.e., directory of images)")
-ap.add_argument("-m", "--model", required=True, # --model : The path to our output serialized Keras model.
+ap.add_argument("-m", "--model", # --model : The path to our output serialized Keras model.
 	help="path to output model")
-ap.add_argument("-l", "--labelbin", required=True, # --labelbin : The path to our output multi-label binarizer object.
+ap.add_argument("-l", "--labelbin", # --labelbin : The path to our output multi-label binarizer object.
 	help="path to output label binarizer")
 ap.add_argument("-p", "--plot", type=str, default="plot.png", # --plot : The path to our output plot of training loss and accuracy.
 	help="path to output accuracy/loss plot")
@@ -40,7 +39,7 @@ img_dim = (28,28,3)
 EPOCHS = 12
 train_data_dir = 'splited_dataset/train'
 test_data_dir = 'splited_dataset/test'
-BS = 128
+BS = 32
 LR = 1e-3
 labels = []
 train_samples_nbr = file_count = sum(len(files) for _, _, files in os.walk(r'splited_dataset/train'))
@@ -90,10 +89,10 @@ model = VGGNet.build(
 
 #%%
 #opt = Adam(lr=LR, decay=LR / EPOCHS)
-opt = RMSprop(lr=0.001, rho=0.9, epsilon=None, decay=0.0)
+opt = RMSprop(lr=LR, rho=0.9, epsilon=None, decay=0.0)
 model.compile(loss='categorical_crossentropy',
               optimizer=opt,
-              metrics=['accuracy']) #binary_crossentrpy 99% acc 
+              metrics=['accuracy']) #binary_crossentropy training 99% acc 
 
 
 #%%
@@ -102,7 +101,19 @@ train_datagen = ImageDataGenerator(
     rescale=1. / 255,
     shear_range=0.2,
     zoom_range=0.2,
-    horizontal_flip=False)
+    featurewise_center=False,# set input mean to 0 over the dataset
+    samplewise_center=False,  # set each sample mean to 0
+    featurewise_std_normalization=False,  # divide inputs by std of dataset
+    samplewise_std_normalization=False,  # divide each input by its std
+    zca_whitening=False,  # apply ZCA whitening
+    rotation_range=5.0,  # randomly rotate images in the range (deg 0 to 180)
+    width_shift_range=0.0,  # randomly shift images horizontally
+    height_shift_range=0.0,  # randomly shift images vertically
+    horizontal_flip=False,  # randomly flip images
+    vertical_flip=False
+    )
+
+
 
 #%%
 # data augmentation for testing
@@ -127,8 +138,8 @@ history = model.fit_generator(
     validation_data=validation_generator,
     validation_steps=test_samples_nbr // BS)
 
-model.summary();
-plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True);
+# model.summary();
+# plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True);
 
 #%%
 # save the model to disk
