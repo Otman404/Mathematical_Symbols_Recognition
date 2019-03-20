@@ -35,11 +35,11 @@ args = vars(ap.parse_args())
 
 
 #%%
-img_dim = (28,28,3)
+img_dim = (45,45,3)
 EPOCHS = 12
 train_data_dir = 'splited_dataset/train'
 test_data_dir = 'splited_dataset/test'
-BS = 32
+BS = 100
 LR = 1e-3
 labels = []
 train_samples_nbr = file_count = sum(len(files) for _, _, files in os.walk(r'splited_dataset/train'))
@@ -88,8 +88,8 @@ model = VGGNet.build(
     activFct="softmax") #for multi-class classification
 
 #%%
-#opt = Adam(lr=LR, decay=LR / EPOCHS)
-opt = RMSprop(lr=LR, rho=0.9, epsilon=None, decay=0.0)
+opt = Adam(lr=LR, decay=LR / EPOCHS)
+#opt = RMSprop(lr=LR, rho=0.9, epsilon=None, decay=0.0)
 model.compile(loss='categorical_crossentropy',
               optimizer=opt,
               metrics=['accuracy']) #binary_crossentropy training 99% acc 
