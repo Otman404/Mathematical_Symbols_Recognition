@@ -13,6 +13,7 @@ from keras import backend as K
 from myModel.model import VGGNet
 import matplotlib.pyplot as plt
 from imutils import paths
+import pydot
 import numpy as np
 import argparse
 import random
@@ -94,19 +95,18 @@ model.compile(loss='categorical_crossentropy',
               optimizer=opt,
               metrics=['accuracy']) #binary_crossentropy training 99% acc 
 
-
 #%%
 # data augmentation for training
 train_datagen = ImageDataGenerator(
     rescale=1. / 255,
-    shear_range=0.2,
-    zoom_range=0.2,
+    shear_range=0.0,
+    zoom_range=0.0,
     featurewise_center=False,# set input mean to 0 over the dataset
     samplewise_center=False,  # set each sample mean to 0
     featurewise_std_normalization=False,  # divide inputs by std of dataset
     samplewise_std_normalization=False,  # divide each input by its std
     zca_whitening=False,  # apply ZCA whitening
-    rotation_range=5.0,  # randomly rotate images in the range (deg 0 to 180)
+    rotation_range=0.0,  # randomly rotate images in the range (deg 0 to 180)
     width_shift_range=0.0,  # randomly shift images horizontally
     height_shift_range=0.0,  # randomly shift images vertically
     horizontal_flip=False,  # randomly flip images
@@ -138,15 +138,15 @@ history = model.fit_generator(
     validation_data=validation_generator,
     validation_steps=test_samples_nbr // BS)
 
-# model.summary();
-# plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True);
+model.summary();
+plot_model(model, to_file='model_plot_final.png', show_shapes=True, show_layer_names=True);
 
 #%%
 # save the model to disk
 print("[INFO] serializing network...")
 #model.save(args["model"])
-model.save("trained_model.model")
-model.save_weights("weights.h5")
+model.save("trained_model_final.model")
+model.save_weights("weights_final.h5")
 #save the multi-label binarizer to disk
 print("[INFO] serializing label binarizer...")
 # f = open(args["labelbin"], "wb")
@@ -158,17 +158,27 @@ f.close()
 #%%
 probabilities = model.predict_generator(validation_generator,2000)
 
-scores = model.evaluate_generator(validation_generator,test_samples_nbr) #1514 testing images
+scores = model.evaluate_generator(validation_generator,test_samples_nbr) 
 print("Accuracy = ", scores[1])
 
 #%%
 
 
-fig1, ax_acc = plt.subplots()
+# Plot training & validation accuracy values
 plt.plot(history.history['acc'])
 plt.plot(history.history['val_acc'])
-plt.xlabel('Epoch')
+plt.title('Model accuracy')
 plt.ylabel('Accuracy')
-plt.title('Model - Accuracy')
-plt.legend(['Training', 'Validation'], loc='lower right')
-plt.savefig("plotting.png")
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Test'], loc='upper left')
+plt.savefig('model_accuary_final.png')
+plt.show()
+# Plot training & validation loss values
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('Model loss')
+plt.ylabel('Loss')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Test'], loc='upper left')
+plt.savefig('model_loss_final.png')
+plt.show()
