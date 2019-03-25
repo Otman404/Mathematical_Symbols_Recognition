@@ -22,7 +22,7 @@ import cv2
 import os
 
 #%%
-# construct the argument parse and parse the arguments
+# construct the argument parse and parse the arguments (for command line)
 ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--dataset", # --dataset : The path to our dataset. add required=True if you want
 	help="path to input dataset (i.e., directory of images)")
@@ -36,17 +36,20 @@ args = vars(ap.parse_args())
 
 
 #%%
-img_dim = (45,45,3)
+#Initialize parametres
+
 EPOCHS = 12
+BS = 100 #Batch size
+LR = 1e-3 #Learning rate 0.001
+img_dim = (45,45,3)
 train_data_dir = 'splited_dataset/train'
 test_data_dir = 'splited_dataset/test'
-BS = 100
-LR = 1e-3
 labels = []
 train_samples_nbr = file_count = sum(len(files) for _, _, files in os.walk(r'splited_dataset/train'))
 test_samples_nbr = file_count = sum(len(files) for _, _, files in os.walk(r'splited_dataset/test'))
 
 #%%
+# Infos about our Dataset
 nbr_of_pictures = []
 
 labels = os.listdir("data/extracted_images")
@@ -56,32 +59,31 @@ for _, _, files in os.walk(r'data/extracted_images'):
 
 nbr_of_pictures=nbr_of_pictures[1:]
 
-# 82 nbrOfClasses
 print("Number of samples of every class ...")
-for i in range(82):  
+for i in range(82):  # 82 : Nbr of classes
     print(labels[i]," : ",nbr_of_pictures[i])
 #%%
+# Checking image data format
+
 if K.image_data_format() == 'channels_first':
     input_shape = (img_dim[2], img_dim[0], img_dim[1])
 else:
     input_shape = (img_dim[0], img_dim[1], img_dim[2])
 
-
 #%%
 # grab the image paths and randomly shuffle them
-print("[INFO] loading images...")
+# print("[INFO] loading images...")
 #imagePaths = sorted(list(paths.list_images(args["dataset"])))
-imagePaths = sorted(list(paths.list_images(train_data_dir)))
+# imagePaths = sorted(list(paths.list_images(train_data_dir)))
 #imagePaths = sorted(list(paths.list_images("data/extracted_images")))
-random.seed(42)
-random.shuffle(imagePaths)
+# random.seed(42)
+# random.shuffle(imagePaths)
 
 
 #%%
-l = label = [ item for item in os.listdir(train_data_dir) if os.path.isdir(os.path.join(train_data_dir, item)) ]
-labels.append(l)
+label = [ item for item in os.listdir(train_data_dir) if os.path.isdir(os.path.join(train_data_dir, item)) ]
+labels.append(label)
 print("Classes : ",labels[0]) #labels
-
 
 #%%
 # binarize the labels using scikit-learn's special multi-label
@@ -89,25 +91,26 @@ print("Classes : ",labels[0]) #labels
 print("[INFO] class labels:")
 mlb = MultiLabelBinarizer()
 labels = mlb.fit_transform(labels)
- 
 # loop over each of the possible class labels and show them
 for (i, label) in enumerate(mlb.classes_):
 	print("{}. {}".format(i + 1, label))
 
 
 #%%
-print("[INFO] compiling model...")
+# Building the model 
 model = VGGNet.build(
 	width=img_dim[1], height=img_dim[0],
 	depth=img_dim[2], classes=82,
     activFct="softmax") #for multi-class classification
 
 #%%
+# Compiling the model 
+
 opt = Adam(lr=LR, decay=LR / EPOCHS)
 #opt = RMSprop(lr=LR, rho=0.9, epsilon=None, decay=0.0)
 model.compile(loss='categorical_crossentropy',
               optimizer=opt,
-              metrics=['accuracy']) #binary_crossentropy training 99% acc 
+              metrics=['accuracy']) 
 
 #%%
 # data augmentation for training
@@ -127,11 +130,11 @@ train_datagen = ImageDataGenerator(
     vertical_flip=False
     )
 
+# data augmentation for testing
+test_datagen = ImageDataGenerator(rescale=1. / 255)
 
 
 #%%
-# data augmentation for testing
-test_datagen = ImageDataGenerator(rescale=1. / 255)
 
 train_generator = train_datagen.flow_from_directory(
     train_data_dir,
@@ -145,6 +148,8 @@ validation_generator = test_datagen.flow_from_directory(
     batch_size=BS,
     class_mode='categorical')
 
+#%%
+# Training
 history = model.fit_generator(
     train_generator,
     steps_per_epoch=train_samples_nbr // BS,
@@ -152,6 +157,7 @@ history = model.fit_generator(
     validation_data=validation_generator,
     validation_steps=test_samples_nbr // BS)
 
+#%%
 model.summary();
 plot_model(model, to_file='model_plot_final.png', show_shapes=True, show_layer_names=True);
 
@@ -170,8 +176,9 @@ f.close()
 
 
 #%%
-probabilities = model.predict_generator(validation_generator,2000)
+#probabilities = model.predict_generator(validation_generator,2000)
 
+# Evaluating the model / Get Validation accuracy on sample from validation set
 scores = model.evaluate_generator(validation_generator,test_samples_nbr//BS,verbose=1) 
 print("Accuracy = ", scores[1])
 
@@ -187,6 +194,8 @@ plt.xlabel('Epoch')
 plt.legend(['Train', 'Test'], loc='upper left')
 plt.savefig('model_accuary_final.png')
 plt.show()
+
+#%%
 # Plot training & validation loss values
 plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])
@@ -196,3 +205,14 @@ plt.xlabel('Epoch')
 plt.legend(['Train', 'Test'], loc='upper left')
 plt.savefig('model_loss_final.png')
 plt.show()
+
+#%%
+# Train - Val plot
+fig1, ax_acc = plt.subplots()
+plt.plot(history.history['acc'])
+plt.plot(history.history['val_acc'])
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy')
+plt.title('Model - Accuracy')
+plt.legend(['Training', 'Validation'], loc='lower right')
+plt.savefig("train_val_plot.png")

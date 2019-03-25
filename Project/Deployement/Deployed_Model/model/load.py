@@ -44,7 +44,7 @@ def init():
     model.add(Activation('softmax'))
     
     #load woeights into new model
-    model.load_weights("weights_final.h5")
+    model.load_weights("weights.h5")
     print("Loaded Model from disk")
 
     #compile and evaluate loaded model
