@@ -159,13 +159,13 @@ history = model.fit_generator(
 
 #%%
 model.summary();
-plot_model(model, to_file='model_plot_final.png', show_shapes=True, show_layer_names=True);
+# plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True);
 
 #%%
 # save the model to disk
 print("[INFO] serializing network...")
 #model.save(args["model"])
-model.save("trained_model_final.model")
+model.save("trained_model.model")
 model.save_weights("weights_final.h5")
 #save the multi-label binarizer to disk
 print("[INFO] serializing label binarizer...")
@@ -192,7 +192,7 @@ plt.title('Model accuracy')
 plt.ylabel('Accuracy')
 plt.xlabel('Epoch')
 plt.legend(['Train', 'Test'], loc='upper left')
-plt.savefig('model_accuary_final.png')
+plt.savefig('model_accuary_plot.png')
 plt.show()
 
 #%%
@@ -203,7 +203,7 @@ plt.title('Model loss')
 plt.ylabel('Loss')
 plt.xlabel('Epoch')
 plt.legend(['Train', 'Test'], loc='upper left')
-plt.savefig('model_loss_final.png')
+plt.savefig('model_loss_plot.png')
 plt.show()
 
 #%%
