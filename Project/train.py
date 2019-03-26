@@ -102,7 +102,8 @@ model = VGGNet.build(
 	width=img_dim[1], height=img_dim[0],
 	depth=img_dim[2], classes=82,
     activFct="softmax") #for multi-class classification
-
+model.summary()
+print('Number of layers of our model : ',len(model.layers))
 #%%
 # Compiling the model 
 
