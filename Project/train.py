@@ -1,4 +1,3 @@
-
 #%%
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
@@ -45,21 +44,22 @@ img_dim = (45,45,3)
 train_data_dir = 'splited_dataset/train'
 test_data_dir = 'splited_dataset/test'
 labels = []
-train_samples_nbr = file_count = sum(len(files) for _, _, files in os.walk(r'splited_dataset/train'))
-test_samples_nbr = file_count = sum(len(files) for _, _, files in os.walk(r'splited_dataset/test'))
+#Nbr of training images
+train_samples_nbr  = sum(len(files) for _, _, files in os.walk(r'splited_dataset/train'))
+#Nbr of testing images
+test_samples_nbr  = sum(len(files) for _, _, files in os.walk(r'splited_dataset/test'))
 
 #%%
 # Infos about our Dataset
 nbr_of_pictures = []
 
 labels = os.listdir("data/extracted_images")
-
 for _, _, files in os.walk(r'data/extracted_images'):
     nbr_of_pictures.append(len(files))
 
 nbr_of_pictures=nbr_of_pictures[1:]
-
-print("Number of samples of every class ...")
+#print nbr of pictures in every class
+print("Number of samples in every class ...")
 for i in range(82):  # 82 : Nbr of classes
     print(labels[i]," : ",nbr_of_pictures[i])
 #%%
@@ -81,20 +81,16 @@ else:
 
 
 #%%
-label = [ item for item in os.listdir(train_data_dir) if os.path.isdir(os.path.join(train_data_dir, item)) ]
-labels.append(label)
-print("Classes : ",labels[0]) #labels
-
+# label = [ item for item in os.listdir(train_data_dir) if os.path.isdir(os.path.join(train_data_dir, item)) ]
+# labels.append(label)
+print(len(labels)," Classes : ",labels)
+labels = np.array(labels)
 #%%
 # binarize the labels using scikit-learn's special multi-label
 # binarizer implementation
 print("[INFO] class labels:")
 mlb = MultiLabelBinarizer()
 labels = mlb.fit_transform(labels)
-# loop over each of the possible class labels and show them
-for (i, label) in enumerate(mlb.classes_):
-	print("{}. {}".format(i + 1, label))
-
 
 #%%
 # Building the model 
@@ -159,15 +155,14 @@ history = model.fit_generator(
     validation_steps=test_samples_nbr // BS)
 
 #%%
-model.summary();
 # plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True);
 
 #%%
 # save the model to disk
 print("[INFO] serializing network...")
 #model.save(args["model"])
-model.save("trained_model.model")
-model.save_weights("weights_final.h5")
+model.save("model.model")
+model.save_weights("weights.h5")
 #save the multi-label binarizer to disk
 print("[INFO] serializing label binarizer...")
 # f = open(args["labelbin"], "wb")
