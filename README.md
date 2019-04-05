@@ -14,6 +14,7 @@ This project requires **Python 3.x** and the following Python libraries installe
 
 to install them, run the following command:
 ```bash
+cd Project
 pip install -r requirements.txt
 ```
 
