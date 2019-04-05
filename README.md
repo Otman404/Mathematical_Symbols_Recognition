@@ -17,7 +17,7 @@ to install them, run the following command:
 pip install -r requirements.txt
 ```
 
-You will also need to have software installed to run and execute a [Jupyter Notebook](http://ipython.org/notebook.html).
+You will also need to have software installed to run and execute a [Jupyter Notebook](https://jupyter.org/).
 
 
 
@@ -35,4 +35,7 @@ python classifier.py --labelbin mlb.pickle --model model.model --image your_imag
 
 ### Data
 
-While no data is directly provided with the project, you will be required to download and use the [Handwritten Math Symbols](https://www.kaggle.com/xainano/handwrittenmathsymbols).
+While no data is directly provided with the project, you will be required to download and use the [Handwritten Math Symbols dataset](https://www.kaggle.com/xainano/handwrittenmathsymbols).
+
+### Deployment
+You will find the deployment in [this repository](https://github.com/Otman404/deployed_math_symbols_classification_flask)
