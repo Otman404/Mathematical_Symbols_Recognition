@@ -12,7 +12,6 @@ from keras import backend as K
 from myModel.model import VGGNet
 import matplotlib.pyplot as plt
 from imutils import paths
-import pydot
 import numpy as np
 import argparse
 import random
