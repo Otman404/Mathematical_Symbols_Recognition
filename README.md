@@ -18,7 +18,7 @@ cd Project
 pip install -r requirements.txt
 ```
 
-You will also need to have software installed to run and execute a [Jupyter Notebook](https://jupyter.org/).
+You will also need to have [Jupyter Notebook](https://jupyter.org/) installed to run and execute a notebook.
 
 
 
