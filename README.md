@@ -10,7 +10,7 @@ The current project is a deep learning-based web application that aims to classi
 - Activation function : Relu
 - 3 Pooling Layers
 - 12 epochs
-- Batch size : 128
+- Batch size : 100
 - Optimizer : Adam
 - Accuracy : 91.5%
 

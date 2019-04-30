@@ -70,24 +70,15 @@ else:
     input_shape = (img_dim[0], img_dim[1], img_dim[2])
 
 #%%
-# grab the image paths and randomly shuffle them
-# print("[INFO] loading images...")
-#imagePaths = sorted(list(paths.list_images(args["dataset"])))
-# imagePaths = sorted(list(paths.list_images(train_data_dir)))
-#imagePaths = sorted(list(paths.list_images("data/extracted_images")))
-# random.seed(42)
-# random.shuffle(imagePaths)
+
 
 
 #%%
-# label = [ item for item in os.listdir(train_data_dir) if os.path.isdir(os.path.join(train_data_dir, item)) ]
-# labels.append(label)
+
 print(len(labels)," Classes : ",labels)
 labels = np.array(labels)
 #%%
-# binarize the labels using scikit-learn's special multi-label
-# binarizer implementation
-print("[INFO] class labels:")
+
 mlb = MultiLabelBinarizer()
 labels = mlb.fit_transform(labels)
 
