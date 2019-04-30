@@ -1,7 +1,21 @@
-# Deep Learning
 ## Project: `Recognition and Classification of Handwritten Math Symbols`
 
-### Install
+# Project Overview
+
+The current project is a deep learning-based web application that aims to classify mathematical symbols using Convolutional Neural Network. The user will write a character and as an output, the application should predict and classify the input from the 82 classes available in the dataset. These classes represent the different math symbols, predefined functions, digits and Latin alphanumeric symbols.
+
+# Model
+
+- 3 Convolutional Layers
+- Activation function : Relu
+- 3 Pooling Layers
+- 12 epochs
+- Batch size : 128
+- Optimizer : Adam
+- Accuracy : 91.5%
+
+
+# Install
 
 This project requires **Python 3.x** and the following Python libraries installed:
 
@@ -31,8 +45,9 @@ If you do not have Python installed yet, it is highly recommended that you insta
 - [`classifier.ipynb`](https://github.com/Otman404/Mathematical_Expressions_Recognition/blob/master/Project/classifier.ipynb) : Feeding the model a new image, gets resized to 45x45 px to get a prediction.
 Better use it like this : 
 ```bash
-python classifier.py --labelbin mlb.pickle --model model.model --image your_image.png
+python classifier.py --labelbin labels.pickle --model model.model --image your_image.png
 ```
+Or use  directly the [`deployed`](https://github.com/Otman404/deployed_math_symbols_classification_flask) version.
 
 ### Data
 

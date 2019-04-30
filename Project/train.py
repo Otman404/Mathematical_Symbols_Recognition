@@ -158,14 +158,14 @@ history = model.fit_generator(
 
 #%%
 # save the model to disk
-print("[INFO] serializing network...")
+print("Saving the model...")
 #model.save(args["model"])
 model.save("model.model")
 model.save_weights("weights.h5")
 #save the multi-label binarizer to disk
-print("[INFO] serializing label binarizer...")
+print("Saving Labels...")
 # f = open(args["labelbin"], "wb")
-f = open("mlb.pickle", "wb")
+f = open("labels.pickle", "wb")
 f.write(pickle.dumps(mlb))
 f.close()
 
