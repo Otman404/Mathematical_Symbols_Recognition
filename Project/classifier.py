@@ -6,6 +6,10 @@ import imutils
 import pickle
 import cv2
 import os
+#import os, ssl
+#if (not os.environ.get('PYTHONHTTPSVERIFY', '') and
+#getattr(ssl, '_create_unverified_context', None)):
+#ssl._create_default_https_context = ssl._create_unverified_context
  
 #%%
 # construct the argument parse and parse the arguments
@@ -41,6 +45,7 @@ mlb = pickle.loads(open(args["labelbin"], "rb").read())
 # labels with the *largest* probability
 print("[INFO] classifying image...")
 proba = model.predict(image)[0]
+print(proba)
 idxs = np.argsort(proba)[::-1][:2]
 # loop over the indexes of the high confidence class labels
 
@@ -60,5 +65,5 @@ cv2.imshow("Output", output)
 cv2.waitKey(0)
 
 print ("This Symbol is :",' '.join(mlb.classes_[proba.argmax(axis=-1)]))
-#model.predict_classes(image)
-#result = "This Symbol is : ".join(mlb.classes_[proba.argmax(axis=-1)])
+model.predict_classes(image)
+result = "This Symbol is : ".join(mlb.classes_[proba.argmax(axis=-1)])
