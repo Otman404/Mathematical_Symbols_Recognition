@@ -1,6 +1,6 @@
 imutils==0.5.2
-opencv_python==4.0.0.21
+opencv_python==4.1.2.30
 matplotlib==3.0.2
-numpy==1.16.2
+numpy==1.17.3
 Keras==2.2.4
 scikit_learn==0.20.3
